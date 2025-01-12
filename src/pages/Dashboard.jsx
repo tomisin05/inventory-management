@@ -4,7 +4,7 @@ import FilterBar from '../components/FilterBar';
 import InventoryItemCard from '../components/InventoryItemCard';
 import LowStockAlert from '../components/LowStockAlert';
 import InventoryUploadModal from '../components/InventoryUploadModal';
-import { getFilteredInventory, updateInventoryItem, deleteInventoryItem } from '../lib/firebase/inventory-operations';
+import { getFilteredInventory, deleteInventoryItem } from '../lib/firebase/inventory-operations';
 import { updateUserStats } from '../lib/firebase/users';
 
 function Dashboard() {

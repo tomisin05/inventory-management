@@ -1,6 +1,9 @@
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { db } from './config';
 import { createDocument, updateDocument, deleteDocument } from './db-operations';
+import { uploadFileToStorage } from './storage-utils';
+import { updateUserStats } from './users';
+import { UnauthorizedError } from './errors';
 
 export async function getFilteredInventory(userId, filters = {}) {
   try {
@@ -92,4 +95,38 @@ export async function updateInventoryItem(itemId, updates, userId) {
     console.error('Error updating inventory item:', error);
     throw error;
   }
-} 
+}
+
+export async function uploadInventoryItem(file, metadata, userId) {
+  try {
+    // Upload image to Storage
+    const storagePath = `inventory/${userId}/${file.name}`;
+    const downloadURL = await uploadFileToStorage(file, storagePath);
+
+    // Create inventory document
+    const itemData = {
+      userId,
+      fileName: file.name,
+      imageUrl: downloadURL,
+      name: metadata.name,
+      quantity: metadata.quantity || 1,
+      category: metadata.category || 'Uncategorized',
+      notes: metadata.notes || '',
+      expiryDate: metadata.expiryDate || null,
+      detectedLabels: [], // We'll update this after object detection
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    // Add inventory document
+    const result = await createDocument('inventory', itemData);
+    
+    // Update user stats
+    await updateUserStats(userId);
+    
+    return result;
+  } catch (error) {
+    console.error('Error uploading inventory item:', error);
+    throw error;
+  }
+}

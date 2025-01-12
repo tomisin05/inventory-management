@@ -10,13 +10,15 @@ function InventoryItemCard({ item, onEdit, onDelete }) {
     await updateItemQuantity(item.id, newQuantity, item.userId);
   };
 
+  console.log(item);
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="relative pt-[100%]">
         <img 
-          src={item.imageUrl} 
+          src={item.imageUrl.downloadURL} 
           alt={item.name} 
           className="absolute top-0 left-0 w-full h-full object-contain bg-gray-100"
+          loading='lazy'
         />
       </div>
       

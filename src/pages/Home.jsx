@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { auth } from '../lib/firebase/config';;
+import { auth } from '../lib/firebase/config';
 import { 
   signInWithPopup, 
   GoogleAuthProvider,
 } from 'firebase/auth';
+import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 function Home() {
   const [user, setUser] = useState(null);
@@ -29,34 +31,49 @@ function Home() {
   };
 
   return (
+    <div>
+        <Navbar user={user} />
     <div className="text-center">
-      <h1 className="text-4xl font-bold mb-8">Welcome to EcoFlow</h1>
+      <h1 className="text-4xl font-bold mb-8">Welcome to Inventory Manager</h1>
       <p className="text-xl mb-8">
-        Store your debate flows digitally and help save the environment!
+        Manage your inventory efficiently and effectively!
       </p>
-      {!user && (
-        <button
-          onClick={loginWithGoogle}
-          className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-600"
-        >
-          Get Started
-        </button> 
+      {!user ? (
+        <>
+          <button
+            onClick={loginWithGoogle}
+            className="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg hover:bg-blue-600"
+          >
+            Get Started with Google
+          </button>
+          <p className="mt-4">
+            Don't have an account? <Link to="/signup" className="text-blue-500 hover:underline">Sign Up</Link> 
+          </p>
+          <p className="mt-4">
+            <Link to="/login" className="text-blue-500 hover:underline">login </Link>
+          </p>
+        </>
+      ) : (
+        <p className="mt-4">You are logged in as {user.email}</p>
       )}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         <FeatureCard
-          title="Digital Storage"
-          description="Upload and organize your debate flows in one secure location"
+          title="Organize Your Inventory"
+          description="Upload and categorize your inventory items for easy access."
         />
         <FeatureCard
-          title="Easy Access"
-          description="Access your flows anytime, anywhere, from any device"
+          title="Track Stock Levels"
+          description="Monitor your stock levels and receive alerts for low inventory."
         />
         <FeatureCard
-          title="Environmental Impact"
-          description="Track your contribution to saving trees and reducing paper waste"
+          title="Manage Suppliers"
+          description="Keep track of your suppliers and their contact information."
         />
       </div>
     </div>
+    </div>
+    
+
   );
 }
 

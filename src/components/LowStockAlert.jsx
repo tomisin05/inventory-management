@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, query, where } from 'firebase/firestore';
 import { db } from '../lib/firebase/config';
+import { getDocs } from 'firebase/firestore';
 
 function LowStockAlert({ userId, threshold = 3 }) {
   const [lowStockItems, setLowStockItems] = useState([]);

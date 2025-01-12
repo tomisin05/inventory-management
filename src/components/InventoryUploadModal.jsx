@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { uploadInventoryItem } from '../lib/firebase/inventory-operations';
 
+
+
 function InventoryUploadModal({ onClose, onSuccess, userId }) {
   const [file, setFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -56,16 +58,56 @@ function InventoryUploadModal({ onClose, onSuccess, userId }) {
 
               {/* Form fields for metadata */}
               <div className="space-y-4">
-                {/* Add your form fields here */}
-                {/* Example: */}
                 <input
                   type="text"
                   placeholder="Item name"
                   value={metadata.name}
                   onChange={(e) => setMetadata({ ...metadata, name: e.target.value })}
                   className="w-full px-3 py-2 border rounded-md"
+                  required
                 />
-                {/* Add other fields similarly */}
+                
+                <input
+                  type="number"
+                  placeholder="Quantity"
+                  value={metadata.quantity}
+                  onChange={(e) => setMetadata({ ...metadata, quantity: parseInt(e.target.value) || 0 })}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                  min="0"
+                />
+                
+                <select
+                  value={metadata.category}
+                  onChange={(e) => setMetadata({ ...metadata, category: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-md"
+                  required
+                >
+                  <option value="">Select Category</option>
+                  <option value="Pantry">Pantry</option>
+                  <option value="Refrigerated">Refrigerated</option>
+                  <option value="Frozen">Frozen</option>
+                  <option value="Beverages">Beverages</option>
+                  <option value="Snacks">Snacks</option>
+                  <option value="Condiments">Condiments</option>
+                  <option value="Other">Other</option>
+                </select>
+                
+                <input
+                  type="date"
+                  placeholder="Expiry Date"
+                  value={metadata.expiryDate}
+                  onChange={(e) => setMetadata({ ...metadata, expiryDate: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+                
+                <textarea
+                  placeholder="Notes"
+                  value={metadata.notes}
+                  onChange={(e) => setMetadata({ ...metadata, notes: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-md"
+                  rows="3"
+                />
               </div>
 
               <div className="flex justify-end space-x-3 mt-6">

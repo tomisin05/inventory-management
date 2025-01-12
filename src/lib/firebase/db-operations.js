@@ -13,6 +13,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './config';
 import { NotFoundError, ValidationError } from './errors';
+import { validateInventoryMetadata, validateInventoryUpdate } from './validation';
 
 export async function createDocument(collectionName, data) {
   try {

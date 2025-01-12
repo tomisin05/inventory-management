@@ -1,26 +1,43 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import Navbar from './components/Navbar'
 import Layout from './components/Layout'
-import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
-import Leaderboard from './pages/Leaderboard'
-import Tournaments from './components/Tournaments'
-import './App.css'
+import PrivateRoute from './components/PrivateRoute'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import Home from './pages/Home'
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <Router>
+      <AuthProvider>
+        {/* <Navbar /> */}
         <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="leaderboard" element={<Leaderboard />} />
-            <Route path="tournaments" element={<Tournaments />} /> 
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route element={<Layout />}>
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <PrivateRoute>
+                  <Dashboard />
+                </PrivateRoute>
+              }
+            />
           </Route>
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   )
 }
 

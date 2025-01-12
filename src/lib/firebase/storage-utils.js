@@ -5,12 +5,14 @@ export async function uploadFileToStorage(file, userId) {
   try {
     // Generate a unique filename using timestamp
     const timestamp = Date.now();
-    const filename = `${timestamp}_${file.name}`;
+    const filename = `${file.name}`;
     const path = `inventory/${userId}/${filename}`;
+    console.log('Uploading file to storage:', path);
     
     const storageRef = ref(storage, path);
     const snapshot = await uploadBytes(storageRef, file);
     const downloadURL = await getDownloadURL(snapshot.ref);
+    console.log('File uploaded successfully:', downloadURL);
     
     return {
       downloadURL,

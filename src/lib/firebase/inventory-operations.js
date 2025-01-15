@@ -1,6 +1,6 @@
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
-import { db } from './config';
-import { createDocument, updateDocument, deleteDocument } from './db-operations';
+import { collection, query, where, orderBy, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { db, storage } from './config';
+import { createDocument, updateDocument, deleteDocument, getDocument } from './db-operations';
 import { uploadFileToStorage } from './storage-utils';
 import { updateUserStats } from './users';
 import { UnauthorizedError } from './errors';
@@ -46,56 +46,56 @@ export async function getFilteredInventory(userId, filters = {}) {
   }
 }
 
-export async function deleteInventoryItem(itemId, userId) {
-  try {
-    const item = await getDocument('inventory', itemId);
+// export async function deleteInventoryItem(itemId, userId) {
+//   try {
+//     const item = await getDocument('inventory', itemId);
     
-    if (item.userId !== userId) {
-      throw new UnauthorizedError('Only the owner can delete this item');
-    }
+//     if (item.userId !== userId) {
+//       throw new UnauthorizedError('Only the owner can delete this item');
+//     }
 
-    // Delete the file from storage if it exists
-    if (item.imageUrl) {
-      await deleteFileFromStorage(`inventory/${userId}/${item.fileName}`);
-    }
+//     // Delete the file from storage if it exists
+//     if (item.imageUrl) {
+//       await deleteFileFromStorage(`inventory/${userId}/${item.fileName}`);
+//     }
 
-    // Delete the inventory document
-    await deleteDocument('inventory', itemId);
+//     // Delete the inventory document
+//     await deleteDocument('inventory', itemId);
     
-    // Update user stats
-    await updateUserStats(userId);
+//     // Update user stats
+//     await updateUserStats(userId);
     
-    return true;
-  } catch (error) {
-    console.error('Error deleting inventory item:', error);
-    throw error;
-  }
-}
+//     return true;
+//   } catch (error) {
+//     console.error('Error deleting inventory item:', error);
+//     throw error;
+//   }
+// }
 
-export async function updateInventoryItem(itemId, updates, userId) {
-  try {
-    const item = await getDocument('inventory', itemId);
+// export async function updateInventoryItem(itemId, updates, userId) {
+//   try {
+//     const item = await getDocument('inventory', itemId);
     
-    if (item.userId !== userId) {
-      throw new UnauthorizedError('Only the owner can update this item');
-    }
+//     if (item.userId !== userId) {
+//       throw new UnauthorizedError('Only the owner can update this item');
+//     }
 
-    await updateDocument('inventory', itemId, {
-      ...updates,
-      updatedAt: new Date()
-    });
+//     await updateDocument('inventory', itemId, {
+//       ...updates,
+//       updatedAt: new Date()
+//     });
 
-    // Update user stats if quantity changed
-    if (updates.quantity !== undefined) {
-      await updateUserStats(userId);
-    }
+//     // Update user stats if quantity changed
+//     if (updates.quantity !== undefined) {
+//       await updateUserStats(userId);
+//     }
 
-    return true;
-  } catch (error) {
-    console.error('Error updating inventory item:', error);
-    throw error;
-  }
-}
+//     return true;
+//   } catch (error) {
+//     console.error('Error updating inventory item:', error);
+//     throw error;
+//   }
+// }
 
 export async function uploadInventoryItem(file, metadata, userId) {
   try {
@@ -130,3 +130,39 @@ export async function uploadInventoryItem(file, metadata, userId) {
     throw error;
   }
 }
+
+
+
+export const updateInventoryItem = async (itemId, updatedData) => {
+    try {
+      const itemRef = doc(db, 'inventory', itemId);
+      await updateDoc(itemRef, {
+        ...updatedData,
+        updatedAt: new Date()
+      });
+      return true;
+    } catch (error) {
+      console.error('Error updating inventory item:', error);
+      throw error;
+    }
+  };
+  
+  export const deleteInventoryItem = async (itemId) => {
+    try {
+      // Delete the document from Firestore
+      await deleteDoc(doc(db, 'inventory', itemId));
+  
+      // If there's an associated image, delete it from Storage
+      try {
+        const imageRef = ref(storage, `inventory/${itemId}`);
+        await deleteObject(imageRef);
+      } catch (storageError) {
+        console.log('No image found or error deleting image:', storageError);
+      }
+  
+      return true;
+    } catch (error) {
+      console.error('Error deleting inventory item:', error);
+      throw error;
+    }
+  };

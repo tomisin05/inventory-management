@@ -54,6 +54,14 @@ function Dashboard() {
     fetchInventory();
   };
 
+  const handleItemUpdate = (updatedItem) => {
+    setInventory(current =>
+      current.map(item =>
+        item.id === updatedItem.id ? updatedItem : item
+      )
+    );
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
@@ -80,6 +88,7 @@ function Dashboard() {
             <InventoryItemCard
               key={item.id}
               item={item}
+              onEdit={handleItemUpdate}
               onDelete={() => handleItemDelete(item.id)}
             />
           ))}

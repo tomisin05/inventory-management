@@ -1,20 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { uploadInventoryItem } from '../lib/firebase/inventory-operations';
-
-
-
-
-
 // src/components/FlowUpload.jsx
 import Webcam from 'react-webcam';
 import { useAuth } from '../contexts/AuthContext';
-
-
-
-
-
-
-
 
 function InventoryUploadModal({ onClose, onSuccess, userId }) {
     const [file, setFile] = useState(null);

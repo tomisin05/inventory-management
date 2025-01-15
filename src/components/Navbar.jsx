@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { auth } from '../lib/firebase/config';
 import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 
+
 function Navbar() {
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -40,6 +41,13 @@ function Navbar() {
           <Link to="/" className="text-xl font-bold">Inventory Manager</Link>
           <div className="hidden md:flex items-center space-x-4">
             <Link to="/dashboard" className="hover:text-blue-600">Dashboard</Link>
+            <Link
+                to="/recipe-generator"
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                >
+                Recipe Generator
+                </Link>
+
             {user ? (
               <div className="flex items-center space-x-4">
                 <span>{user.displayName}</span>

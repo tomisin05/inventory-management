@@ -3,37 +3,210 @@ import { uploadInventoryItem } from '../lib/firebase/inventory-operations';
 
 
 
+
+
+// src/components/FlowUpload.jsx
+import Webcam from 'react-webcam';
+import { useAuth } from '../contexts/AuthContext';
+
+
+
+
+
+
+
+
 function InventoryUploadModal({ onClose, onSuccess, userId }) {
-  const [file, setFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [metadata, setMetadata] = useState({
-    name: '',
-    quantity: 1,
-    category: 'Pantry',
-    expiryDate: '',
-    notes: ''
-  });
+    const [file, setFile] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [metadata, setMetadata] = useState({
+      name: '',
+      quantity: 1,
+      category: 'Pantry',
+      expiryDate: '',
+      notes: ''
+    });
+  
+    const fileInputRef = useRef(null);
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (!file) {
+        alert('Please select an image');
+        return;
+      }
+  
+      setIsUploading(true);
+      try {
+        await uploadInventoryItem(file, metadata, userId);
+        onSuccess();
+      } catch (error) {
+        console.error('Error uploading item:', error);
+        alert('Failed to upload item');
+      } finally {
+        setIsUploading(false);
+      }
+    };
 
-  const fileInputRef = useRef(null);
+  const [uploadMethod, setUploadMethod] = useState('file');
+  const { user } = useAuth();
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) {
-      alert('Please select an image');
-      return;
-    }
+  const webcamRef = useRef(null);
 
-    setIsUploading(true);
-    try {
-      await uploadInventoryItem(file, metadata, userId);
-      onSuccess();
-    } catch (error) {
-      console.error('Error uploading item:', error);
-      alert('Failed to upload item');
-    } finally {
-      setIsUploading(false);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      const url = URL.createObjectURL(selectedFile);
+      setPreviewUrl(url);
     }
   };
+
+  const handleCapture = async () => {
+    if (!webcamRef.current) return;
+
+    const imageSrc = webcamRef.current.getScreenshot();
+    if (!imageSrc) return;
+
+    // Convert base64 to blob
+    const response = await fetch(imageSrc);
+    const blob = await response.blob();
+    
+    // Create file from blob with unique name
+    const capturedFile = new File(
+      [blob], 
+      `capture-${Date.now()}.jpg`, 
+      { type: 'image/jpeg' }
+    );
+    setFile(capturedFile);
+    setPreviewUrl(imageSrc);
+  };
+
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!file) {
+//       alert('Please select a file or capture an image');
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     try {
+//       // Use the existing uploadFlow function
+//       const uploadMetadata = {
+//         ...metadata,
+//         pageCount: 1, // Default to 1 for single image uploads
+//       };
+
+//       const flowData = await uploadFlow(file, uploadMetadata, user.uid);
+      
+//       // Call onSubmit with the returned flow data
+//       if (onSubmit) {
+//         onSubmit(flowData);
+//       }
+
+//       // Reset form
+//       setFile(null);
+//       setPreviewUrl(null);
+//       setMetadata({
+//         title: '',
+//         tournament: '',
+//         round: '',
+//         team: '',
+//         judge: '',
+//         division: '',
+//         tags: [],
+//         customTag: '',
+//       });
+//     } catch (error) {
+//       console.error('Error uploading flow:', error);
+//       alert('Failed to upload flow: ' + error.message);
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+
+
+{/* //upload modal
+    <div className="flex space-x-4 mb-4">
+    <button
+      type="button"
+      onClick={() => setUploadMethod('file')}
+      className={`px-4 py-2 rounded ${
+        uploadMethod === 'file'
+          ? 'bg-blue-500 text-white'
+          : 'bg-gray-200 text-gray-700'
+      }`}
+    >
+      Upload File
+    </button>
+    <button
+      type="button"
+      onClick={() => setUploadMethod('camera')}
+      className={`px-4 py-2 rounded ${
+        uploadMethod === 'camera'
+          ? 'bg-blue-500 text-white'
+          : 'bg-gray-200 text-gray-700'
+      }`}
+    >
+      Use Camera
+    </button>
+  </div>
+
+  <div className="flow-upload-container"> 
+
+
+    // File Upload or Camera Section 
+    <div className="mb-4">
+      {uploadMethod === 'file' ? (
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full"
+          />
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            className="w-full rounded-lg"
+          />
+          <button
+            type="button"
+            onClick={handleCapture}
+            className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Capture Photo
+          </button>
+        </div>
+      )}
+    </div>
+
+ 
+    {previewUrl && (
+      <div className="mb-4">
+        <img
+          src={previewUrl}
+          alt="Preview"
+          className="max-h-48 rounded-lg mx-auto"
+        />
+      </div>
+    )}
+
+    */}
+
+
+
+
+
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50">
@@ -41,6 +214,75 @@ function InventoryUploadModal({ onClose, onSuccess, userId }) {
         <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
           <h2 className="text-xl font-semibold mb-4">Add New Item</h2>
           
+        <div className="flex space-x-4 mb-4">
+        <button
+        type="button"
+        onClick={() => setUploadMethod('file')}
+        className={`px-4 py-2 rounded ${
+            uploadMethod === 'file'
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-200 text-gray-700'
+        }`}
+        >
+        Upload File
+        </button>
+        <button
+        type="button"
+        onClick={() => setUploadMethod('camera')}
+        className={`px-4 py-2 rounded ${
+            uploadMethod === 'camera'
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-200 text-gray-700'
+        }`}
+        >
+        Use Camera
+        </button>
+    </div>
+
+    <div className="flow-upload-container"> 
+
+
+        // File Upload or Camera Section 
+        <div className="mb-4">
+        {uploadMethod === 'file' ? (
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+            <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full"
+            />
+            </div>
+        ) : (
+            <div className="space-y-4">
+            <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                className="w-full rounded-lg"
+            />
+            <button
+                type="button"
+                onClick={handleCapture}
+                className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+                Capture Photo
+            </button>
+            </div>
+        )}
+        </div>
+
+    
+        {previewUrl && (
+        <div className="mb-4">
+            <img
+            src={previewUrl}
+            alt="Preview"
+            className="max-h-48 rounded-lg mx-auto"
+            />
+        </div>
+        )}
+
           <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
@@ -130,6 +372,7 @@ function InventoryUploadModal({ onClose, onSuccess, userId }) {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }

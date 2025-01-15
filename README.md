@@ -247,6 +247,7 @@ Ensure that your Firebase project is set up with the necessary services and that
 - [ ] Interactive tutorials
 - [ ] Enhanced error handling and user feedback
 - [ ] Accessibility compliance (WCAG 2.1)
+- [ ] Expiration Date Reminder/Notification
 
 ### Integration Possibilities
 - [ ] Smart device integration

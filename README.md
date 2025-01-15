@@ -1,54 +1,27 @@
-# EcoFlow: A Debate Flow Management System
+# StockSmart AI: AI-Powered Inventory Management and Recipe Generation
 
-EcoFlow is a comprehensive web application designed to streamline the management of debate flows. It provides a user-friendly interface for uploading, organizing, and analyzing debate flows, enhancing the experience for debaters, coaches, and judges alike.
+StockSmart AI is a React-based web application that combines intelligent inventory management with AI-driven recipe generation. It helps users track their food inventory and create recipes based on available ingredients.
 
-This React-based application integrates with Firebase for backend services, offering robust user authentication, real-time database operations, and secure file storage. The system allows users to upload debate flows, categorize them by tournaments and rounds, and apply various filters for easy retrieval.
-
-Key features include:
-- User authentication and personalized dashboards
-- Flow upload with metadata tagging
-- Advanced filtering and search capabilities
-- Tournament management and flow organization
-- Leaderboard to track community impact
-- Responsive design for seamless use across devices
-
-EcoFlow aims to revolutionize how debate flows are managed, making it easier for the debate community to store, access, and analyze their performance data.
+This application leverages Firebase for backend services and Google's Generative AI for recipe creation. It offers a user-friendly interface for managing inventory items, generating recipes, and maintaining a collection of saved recipes.
 
 ## Repository Structure
+
+The project follows a standard React application structure with additional directories for Firebase configuration and custom components:
 
 ```
 .
 ├── src/
 │   ├── components/
-│   │   ├── EditFlowModal.jsx
-│   │   ├── FilterBar.jsx
-│   │   ├── FlowCard.jsx
-│   │   ├── FlowUpload.jsx
-│   │   ├── Layout.jsx
-│   │   ├── Navbar.jsx
-│   │   └── Tournaments.jsx
 │   ├── contexts/
-│   │   └── AuthContext.jsx
 │   ├── lib/
-│   │   └── firebase/
-│   │       ├── config.js
-│   │       ├── db-operations.js
-│   │       ├── flows.js
-│   │       ├── storage-utils.js
-│   │       ├── tournaments.js
-│   │       ├── users.js
-│   │       └── validation.js
+│   │   ├── firebase/
+│   │   ├── gemini/
+│   │   └── services/
 │   ├── pages/
-│   │   ├── Dashboard.jsx
-│   │   ├── Home.jsx
-│   │   └── Leaderboard.jsx
-│   ├── App.css
 │   ├── App.jsx
-│   ├── index.css
 │   └── main.jsx
+├── .env
 ├── eslint.config.js
-├── firebase.json
-├── firestore.indexes.json
 ├── index.html
 ├── package.json
 ├── postcss.config.js
@@ -56,29 +29,28 @@ EcoFlow aims to revolutionize how debate flows are managed, making it easier for
 └── vite.config.js
 ```
 
+Key Files:
+- `src/App.jsx`: Main application component and routing setup
+- `src/pages/Dashboard.jsx`: Inventory management interface
+- `src/pages/RecipeGenerator.jsx`: AI-powered recipe generation page
+- `src/lib/firebase/config.js`: Firebase configuration and initialization
+- `package.json`: Project dependencies and scripts
+
 ## Usage Instructions
 
 ### Installation
 
-Prerequisites:
-- Node.js (v14.0.0 or later)
-- npm (v6.0.0 or later)
-
-To set up the project locally, follow these steps:
-
-1. Clone the repository:
+1. Ensure you have Node.js (v14 or later) and npm installed.
+2. Clone the repository:
    ```
-   git clone https://github.com/tomisin05/flow-scanner.git
-   cd flow-scan
+   git clone <repository-url>
+   cd stockSmart AI
    ```
-
-2. Install dependencies:
+3. Install dependencies:
    ```
    npm install
    ```
-
-3. Set up environment variables:
-   Create a `.env` file in the root directory and add the following Firebase configuration variables:
+4. Create a `.env` file in the project root and add your Firebase and Google AI configuration:
    ```
    VITE_FIREBASE_API_KEY=your_api_key
    VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
@@ -86,146 +58,204 @@ To set up the project locally, follow these steps:
    VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
    VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
    VITE_FIREBASE_APP_ID=your_app_id
+   VITE_GOOGLE_AI_API_KEY=your_google_ai_api_key
    ```
 
-### Getting Started
+### Running the Application
 
-To run the development server:
+To start the development server:
 
 ```
 npm run dev
 ```
 
-This will start the Vite development server. Open your browser and navigate to `http://localhost:5173` to view the application.
+The application will be available at `http://localhost:5173` (or another port if 5173 is in use).
 
-### Configuration
+### Building for Production
 
-The application uses Firebase for backend services. Ensure that your Firebase project is set up with the following:
+To create a production build:
 
-- Authentication enabled (with email/password provider)
-- Firestore database created
-- Storage bucket initialized
+```
+npm run build
+```
 
-Update the Firebase configuration in `src/lib/firebase/config.js` if needed.
+The built files will be in the `dist/` directory.
 
-### Common Use Cases
+### Linting
 
-1. Uploading a Flow:
-   - Navigate to the Dashboard
-   - Click "Upload New Flow"
-   - Fill in the flow details and upload the file
-   - Click "Submit" to save the flow
-
-2. Filtering Flows:
-   - Use the FilterBar component on the Dashboard
-   - Select filters such as tournament, round, team, etc.
-   - The flow list will update automatically
-
-3. Editing a Flow:
-   - Click the "Edit" button on a FlowCard
-   - Update the flow details in the EditFlowModal
-   - Click "Save" to apply changes
-
-4. Deleting a Flow:
-   - Click the "Delete" button on a FlowCard
-   - Confirm the deletion when prompted
-
-### Testing & Quality
-
-To run linting:
+To run the linter:
 
 ```
 npm run lint
 ```
 
-### Troubleshooting
+### Testing
 
-1. Issue: Firebase configuration errors
-   - Error: "Firebase: Error (auth/invalid-api-key)."
-   - Diagnostic process:
-     1. Check if the `.env` file exists in the root directory
-     2. Verify that all Firebase configuration variables are correctly set
-     3. Ensure that the Firebase project is properly set up in the Firebase Console
-   - Solution: Double-check the Firebase configuration in both the `.env` file and the Firebase Console
-
-2. Issue: Flows not displaying on the Dashboard
-   - Error: No specific error message, but an empty flow list
-   - Diagnostic process:
-     1. Check the browser console for any error messages
-     2. Verify that the user is authenticated
-     3. Inspect the Firestore database to ensure flows are being saved
-   - Solution: 
-     - If not authenticated, log in to the application
-     - If flows exist in Firestore but don't display, check the filters applied in the FilterBar component
-
-### Debugging
-
-To enable verbose logging:
-
-1. In `src/lib/firebase/flows.js`, uncomment or add console.log statements in key functions like `uploadFlow`, `getUserFlows`, etc.
-2. In the browser, open the developer tools (F12) and check the console for detailed logs.
-
-Performance optimization:
-- Monitor network requests in the browser's Network tab
-- Use React DevTools to identify unnecessary re-renders
-- Consider implementing pagination for large datasets in the Dashboard component
+Currently, there are no specified test scripts in the `package.json`. It's recommended to add testing configurations and scripts for maintaining code quality.
 
 ## Data Flow
 
-The EcoFlow application follows a unidirectional data flow pattern. Here's an overview of how data flows through the application:
+1. User Authentication:
+   - Users sign up or log in through the Firebase Authentication service.
+   - The `AuthContext` manages the user's authentication state throughout the application.
 
-1. User Authentication
-   [User] -> [AuthContext] -> [Firebase Auth]
+2. Inventory Management:
+   - Users can add, view, update, and delete inventory items.
+   - Inventory data is stored in Firebase Firestore.
+   - The `Dashboard` component fetches and displays inventory items.
+   - `InventoryUploadModal` allows users to add new items, including image uploads to Firebase Storage.
 
-2. Flow Management
-   [User] -> [Dashboard] -> [FlowUpload/EditFlowModal] -> [Firebase Functions] -> [Firestore/Storage]
+3. Recipe Generation:
+   - Users input available ingredients and dietary restrictions in the `RecipeGenerator` component.
+   - The application sends a request to the Google Generative AI model via the `geminiModel`.
+   - The AI generates a recipe based on the input, which is then parsed and displayed to the user.
+   - Users can save generated recipes, which are stored in Firestore.
 
-3. Data Retrieval
-   [Firestore] -> [Firebase Functions] -> [Dashboard/FilterBar] -> [FlowCard]
+4. Data Persistence:
+   - All user data, including inventory items and saved recipes, are stored in Firebase Firestore.
+   - Images are stored in Firebase Storage.
 
 ```
-+-------------+     +--------------+     +------------------+
-|    User     | --> | AuthContext  | --> |   Firebase Auth  |
-+-------------+     +--------------+     +------------------+
-       |                                          |
-       v                                          v
-+-------------+     +--------------+     +------------------+
-|  Dashboard  | <-> | FlowUpload/  | <-> | Firebase         |
-|             |     | EditFlowModal|     | Functions        |
-+-------------+     +--------------+     +------------------+
-       ^                                          |
-       |                                          v
-+-------------+     +--------------+     +------------------+
-| FilterBar   | <-> |   FlowCard   | <-- | Firestore/       |
-|             |     |              |     | Storage          |
-+-------------+     +--------------+     +------------------+
+[User] <-> [React Frontend] <-> [Firebase Auth]
+                            <-> [Firebase Firestore]
+                            <-> [Firebase Storage]
+                            <-> [Google Generative AI]
 ```
 
-Note: The Firebase Functions layer represents the client-side Firebase SDK operations, not serverless functions.
+## Deployment
+
+The application is built using Vite, which provides an optimized build for deployment. After running `npm run build`, the `dist/` directory can be deployed to any static hosting service that supports single-page applications.
+
+Recommended deployment platforms include Firebase Hosting, Vercel, or Netlify. Ensure that you configure your deployment platform to handle client-side routing properly.
 
 ## Infrastructure
 
-The EcoFlow application utilizes Firebase as its backend infrastructure. Key resources include:
+The application relies on the following Firebase services:
 
-1. Firebase Authentication
-   - Purpose: Manages user authentication and session handling
+- Firebase Authentication: User authentication and management
+- Firebase Firestore: Database for storing inventory items and recipes
+- Firebase Storage: File storage for inventory item images
 
-2. Cloud Firestore
-   - Collections:
-     - flows: Stores metadata for uploaded debate flows
-     - users: Stores user profile information
-     - tournaments: Stores tournament data
+The Firebase configuration is centralized in `src/lib/firebase/config.js`:
 
-3. Firebase Storage
-   - Purpose: Stores uploaded flow files
+```javascript
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
-4. Firestore Indexes (defined in firestore.indexes.json):
-   - Collection: flows
-     - Indexes on userId, status, createdAt for efficient querying
-     - Additional indexes for filtering by tournament, round, team, etc.
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
+};
 
-5. Firebase Configuration (src/lib/firebase/config.js):
-   - Initializes Firebase app with environment-specific configuration
-   - Exports initialized Firebase services (auth, db, storage)
+const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const storage = getStorage(app);
+```
 
-The application does not use a dedicated infrastructure-as-code solution like CloudFormation or Terraform. Instead, it relies on Firebase's built-in hosting and database services, configured through the Firebase Console and local configuration files.
+Ensure that your Firebase project is set up with the necessary services and that the configuration in your `.env` file matches your Firebase project settings.
+
+## Future Iterations
+
+### Planned Features and Enhancements
+
+#### Recipe Management Enhancements
+- [ ] Advanced recipe filtering and categorization
+  - Filter by meal type (breakfast, lunch, dinner, dessert)
+  - Filter by dietary restrictions (vegetarian, vegan, gluten-free)
+  - Custom category tags
+- [ ] Recipe scaling functionality
+- [ ] Cooking time and difficulty level indicators
+
+#### Shopping List Generator
+- [ ] Automatic ingredient aggregation from multiple recipes
+- [ ] Smart quantity combining and unit conversion
+- [ ] Customizable shopping categories
+- [ ] Export shopping list to PDF/email
+- [ ] Integration with popular grocery delivery services
+
+#### Meal Planning Calendar
+- [ ] Drag-and-drop weekly meal planner
+- [ ] Automatic shopping list generation based on meal plan
+- [ ] Meal prep instructions and timelines
+- [ ] Nutritional balance tracking across meals
+- [ ] Calendar integration (Google Calendar, iCal)
+
+#### Recipe Sharing and Social Features
+- [ ] Public/private recipe sharing options
+- [ ] Shareable recipe links
+- [ ] Social media integration
+- [ ] Recipe collections and favorites
+- [ ] Follow other users and their recipe collections
+
+#### Recipe Rating and Comments
+- [ ] 5-star rating system
+- [ ] User reviews and comments
+- [ ] Photo upload for recipe results
+- [ ] Recipe modification suggestions
+- [ ] Most popular recipes showcase
+
+#### Nutritional Information Analysis
+- [ ] Detailed nutritional breakdown
+- [ ] Dietary goal tracking
+- [ ] Allergen warnings
+- [ ] Macro and micronutrient analysis
+- [ ] Custom dietary restriction warnings
+
+#### Additional Planned Improvements
+- [ ] Mobile app development
+- [ ] Print-friendly recipe cards
+- [ ] Voice command integration
+- [ ] Recipe version control (track modifications)
+- [ ] Ingredient price tracking and budget planning
+- [ ] Integration with smart kitchen appliances
+- [ ] Meal prep video tutorials
+- [ ] Seasonal recipe recommendations
+- [ ] Inventory management integration
+- [ ] Recipe scaling calculator
+
+### Technical Enhancements
+- [ ] Performance optimization
+- [ ] Offline functionality
+- [ ] Enhanced search capabilities
+- [ ] API integrations with nutrition databases
+- [ ] Mobile responsive design improvements
+- [ ] Accessibility improvements
+- [ ] Enhanced data analytics
+- [ ] User preference learning
+
+### Infrastructure Updates
+- [ ] Automated testing implementation
+- [ ] CI/CD pipeline improvements
+- [ ] Database optimization
+- [ ] Caching implementation
+- [ ] Security enhancements
+- [ ] Backup and recovery improvements
+- [ ] Monitoring and logging enhancements
+
+### User Experience Improvements
+- [ ] Enhanced onboarding process
+- [ ] Improved navigation
+- [ ] Dark mode support
+- [ ] Customizable user dashboard
+- [ ] Interactive tutorials
+- [ ] Enhanced error handling and user feedback
+- [ ] Accessibility compliance (WCAG 2.1)
+
+### Integration Possibilities
+- [ ] Smart device integration
+- [ ] Social media sharing
+- [ ] Email notification system
+- [ ] Calendar integration
+- [ ] Shopping platform integration
+- [ ] Nutrition tracking apps integration
+
+This roadmap represents our vision for future development. Features will be prioritized based on user feedback and resource availability. We welcome community suggestions and contributions to help make these improvements possible.
+
+Note: This is a living document and will be updated as new ideas and needs are identified.

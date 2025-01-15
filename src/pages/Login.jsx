@@ -26,6 +26,7 @@ function Login() {
       try {
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider);
+        navigate('/dashboard');
       } catch (error) {
         console.error("Error signing in:", error);
       }

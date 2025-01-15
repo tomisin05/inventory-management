@@ -104,6 +104,12 @@ function InventoryItemCard({ item, onDelete, onEdit }) {
     }
   };
 
+  const displayDate = (date) => {
+    if (!date) return '';
+    const nextDay = new Date(new Date(date).getTime() + (24 * 60 * 60 * 1000));
+    return nextDay.toLocaleDateString();
+  };
+
   if (isEditing) {
     return (
       <div className="bg-white rounded-lg shadow-md p-4">
@@ -214,7 +220,7 @@ function InventoryItemCard({ item, onDelete, onEdit }) {
           </p>
           {item.expiryDate && (
             <p className="text-sm text-gray-600">
-              Expires: {new Date(item.expiryDate).toLocaleDateString()}
+             Expires: {displayDate(item.expiryDate)}
             </p>
           )}
           {item.notes && (

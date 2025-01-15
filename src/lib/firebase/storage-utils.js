@@ -7,12 +7,12 @@ export async function uploadFileToStorage(file, userId) {
     const timestamp = Date.now();
     const filename = `${file.name}`;
     const path = `inventory/${userId}/${filename}`;
-    console.log('Uploading file to storage:', path);
+    // console.log('Uploading file to storage:', path);
     
     const storageRef = ref(storage, path);
     const snapshot = await uploadBytes(storageRef, file);
     const downloadURL = await getDownloadURL(snapshot.ref);
-    console.log('File uploaded successfully:', downloadURL);
+    // console.log('File uploaded successfully:', downloadURL);
     
     return {
       downloadURL,

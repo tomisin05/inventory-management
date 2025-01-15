@@ -220,6 +220,7 @@ const generateRecipe = async (e) => {
     const prompt = `You are a cooking expert. Create a recipe using these ingredients: ${ingredients}. 
       ${dietary ? `Consider these dietary restrictions: ${dietary}.` : ''}
       You must respond ONLY with a valid JSON object, no additional text or explanations.
+      NOTE: the nutritional info must be a string for example "50 grams"
       The JSON must follow this exact structure:
       {
         "name": "Recipe Name",

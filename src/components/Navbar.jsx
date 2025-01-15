@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { auth } from '../lib/firebase/config';
 import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
@@ -6,6 +6,7 @@ import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 function Navbar() {
   const [user, setUser] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -26,6 +27,7 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      navigate('/');
     } catch (error) {
       console.error("Error signing out:", error);
     }

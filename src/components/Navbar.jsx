@@ -40,10 +40,15 @@ function Navbar() {
         <div className="flex justify-between items-center py-4">
           <Link to="/" className="text-xl font-bold">Inventory Manager</Link>
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/dashboard" className="hover:text-blue-600">Dashboard</Link>
+            <Link 
+              to="/dashboard" 
+              className="text-gray-900 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Dashboard
+              </Link>
             <Link
                 to="/recipe-generator"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                className="text-gray-900 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                 >
                 Recipe Generator
                 </Link>

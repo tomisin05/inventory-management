@@ -10,7 +10,6 @@ function InventoryItemCard({ item, onEdit, onDelete }) {
     await updateItemQuantity(item.id, newQuantity, item.userId);
   };
 
-  console.log(item);
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <div className="relative pt-[100%]">

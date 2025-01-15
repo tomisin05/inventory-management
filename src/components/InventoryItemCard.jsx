@@ -1,72 +1,6 @@
-// import React, { useState } from 'react';
-// import { updateItemQuantity } from '../lib/firebase/inventory';
-
-// function InventoryItemCard({ item, onEdit, onDelete }) {
-//   const [quantity, setQuantity] = useState(item.quantity);
-
-//   const handleQuantityChange = async (increment) => {
-//     const newQuantity = Math.max(0, quantity + increment);
-//     setQuantity(newQuantity);
-//     await updateItemQuantity(item.id, newQuantity, item.userId);
-//   };
-
-//   return (
-//     <div className="bg-white rounded-lg shadow-md overflow-hidden">
-//       <div className="relative pt-[100%]">
-//         <img 
-//           src={item.imageUrl.downloadURL} 
-//           alt={item.name} 
-//           className="absolute top-0 left-0 w-full h-full object-contain bg-gray-100"
-//           loading='lazy'
-//         />
-//       </div>
-      
-//       <div className="p-4">
-//         <h3 className="font-semibold text-lg mb-2">{item.name}</h3>
-        
-//         <div className="flex items-center justify-between mb-2">
-//           <span className="text-gray-600">Quantity:</span>
-//           <div className="flex items-center space-x-2">
-//             <button 
-//               onClick={() => handleQuantityChange(-1)}
-//               className="px-2 py-1 bg-red-100 rounded"
-//             >
-//               -
-//             </button>
-//             <span>{quantity}</span>
-//             <button 
-//               onClick={() => handleQuantityChange(1)}
-//               className="px-2 py-1 bg-green-100 rounded"
-//             >
-//               +
-//             </button>
-//           </div>
-//         </div>
-
-//         <p className="text-sm text-gray-600">Category: {item.category}</p>
-        
-//         {item.expiryDate && (
-//           <p className="text-sm text-gray-600">
-//             Expires: {new Date(item.expiryDate).toLocaleDateString()}
-//           </p>
-//         )}
-
-//         <div className="flex flex-wrap gap-2 mt-2">
-//           {item.detectedLabels.map((label, index) => (
-//             <span key={index} className="px-2 py-1 bg-gray-100 text-sm rounded-full">
-//               {label}
-//             </span>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default InventoryItemCard; 
-
 import React, { useState } from 'react';
 import { updateInventoryItem, deleteInventoryItem } from '../lib/firebase/inventory-operations';
+import { updateItemQuantity } from '../lib/firebase/inventory-operations';
 
 
 function InventoryItemCard({ item, onDelete, onEdit }) {
@@ -104,6 +38,24 @@ function InventoryItemCard({ item, onDelete, onEdit }) {
     }
   };
 
+  const [quantity, setQuantity] = useState(item.quantity);
+
+  const handleQuantityChange = async (increment) => {
+    const newQuantity = Math.max(0, quantity + increment);
+    
+    try {
+      setLoading(true);
+      await updateItemQuantity(item.id, newQuantity);
+      setQuantity(newQuantity);
+      onEdit({ ...item, quantity: newQuantity });
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      // Revert the quantity if update fails
+      setQuantity(quantity);
+    } finally {
+      setLoading(false);
+    }
+};
   const displayDate = (date) => {
     if (!date) return '';
     const nextDay = new Date(new Date(date).getTime() + (24 * 60 * 60 * 1000));
@@ -229,6 +181,25 @@ function InventoryItemCard({ item, onDelete, onEdit }) {
             </p>
           )}
         </div>
+
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-gray-600">Quantity:</span>
+          <div className="flex items-center space-x-2">
+            <button 
+              onClick={() => handleQuantityChange(-1)}
+              className="px-2 py-1 bg-red-100 rounded"
+            >
+              -
+            </button>
+            <span>{quantity}</span>
+            <button 
+              onClick={() => handleQuantityChange(1)}
+              className="px-2 py-1 bg-green-100 rounded"
+            >
+              +
+            </button>
+          </div>
+         </div>
 
         <div className="mt-4 flex justify-end space-x-2">
           <button

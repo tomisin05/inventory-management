@@ -166,3 +166,20 @@ export const updateInventoryItem = async (itemId, updatedData) => {
       throw error;
     }
   };
+
+  // In inventory-operations.js
+  
+  export const updateItemQuantity = async (itemId, newQuantity) => {
+    try {
+      const itemRef = doc(db, 'inventory', itemId);
+      await updateDoc(itemRef, {
+        quantity: newQuantity,
+        updatedAt: new Date()
+      });
+      return true;
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      throw error;
+    }
+  };
+  

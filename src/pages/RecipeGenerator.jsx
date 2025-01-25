@@ -23,7 +23,7 @@ function RecipeGenerator() {
       const recipes = await getUserRecipes(auth.currentUser.uid);
       setSavedRecipes(recipes);
     } catch (error) {
-      console.error('Error loading recipes:', error);
+      console.error('E rror loading recipes:', error);
     }
   };
 
